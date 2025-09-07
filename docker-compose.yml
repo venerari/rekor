@@ -1,18 +1,28 @@
-version: "3"
+#
+# Copyright 2021 The Sigstore Authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 services:
   mysql:
     platform: linux/amd64
-    image: docker.io/venerayan/db_server:v1.4.0
+    image: gcr.io/trillian-opensource-ci/db_server:v1.4.0
     environment:
       - MYSQL_ROOT_PASSWORD=zaphod
       - MYSQL_DATABASE=test
       - MYSQL_USER=test
       - MYSQL_PASSWORD=zaphod
     restart: always # keep the MySQL server running
-    ports:
-      - "3306:3306"    
-      - "33060:33060"    
     healthcheck:
       # better healthcheck for MySQL. See https://github.com/docker-library/mysql/issues/930.
       test: "mysqladmin -h 127.0.0.1 --user=$$MYSQL_USER --password=$$MYSQL_ROOT_PASSWORD -s ping"
@@ -40,7 +50,9 @@ services:
       retries: 3
       start_period: 5s
   trillian-log-server:
-    image: docker.io/venerayan/trillian_log_server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.trillian-log-server
     command: [
       "--quota_system=noop",
       "--storage_system=mysql",
@@ -63,7 +75,9 @@ services:
       retries: 15
       start_period: 15s
   trillian-log-signer:
-    image: docker.io/venerayan/trillian_log_signer:latest  
+    build:
+      context: .
+      dockerfile: Dockerfile.trillian-log-signer
     command: [
       "--quota_system=noop",
       "--storage_system=mysql",
@@ -88,7 +102,7 @@ services:
   rekor-server:
     build:
       context: .
-      dockerfile: Dockerfile      
+      target: "deploy"
     environment:
       - TMPDIR=/var/run/attestations # workaround for https://github.com/google/go-cloud/issues/3294
     command: [
