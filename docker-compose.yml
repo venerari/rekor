@@ -1,7 +1,7 @@
 services:
   mysql:
     platform: linux/amd64
-    image: gcr.io/trillian-opensource-ci/db_server:v1.4.0
+    image: venerayan/db_server:v1.4.0
     environment:
       - MYSQL_ROOT_PASSWORD=zaphod
       - MYSQL_DATABASE=test
@@ -35,7 +35,7 @@ services:
       retries: 3
       start_period: 5s
   trillian-log-server:
-    image: rekor_trillian-log-server:latest
+    image: venerayan/rekor_trillian-log-server:latest
     command: [
       "--quota_system=noop",
       "--storage_system=mysql",
@@ -58,7 +58,7 @@ services:
       retries: 15
       start_period: 15s
   trillian-log-signer:
-    image: rekor_trillian-log-signer:latest  
+    image: venerayan/rekor_trillian-log-signer:latest  
     command: [
       "--quota_system=noop",
       "--storage_system=mysql",
