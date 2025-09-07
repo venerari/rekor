@@ -1,18 +1,3 @@
-#
-# Copyright 2021 The Sigstore Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 services:
   mysql:
     platform: linux/amd64
@@ -50,9 +35,7 @@ services:
       retries: 3
       start_period: 5s
   trillian-log-server:
-    build:
-      context: .
-      dockerfile: Dockerfile.trillian-log-server
+    image: rekor_trillian-log-server:latest
     command: [
       "--quota_system=noop",
       "--storage_system=mysql",
@@ -75,9 +58,7 @@ services:
       retries: 15
       start_period: 15s
   trillian-log-signer:
-    build:
-      context: .
-      dockerfile: Dockerfile.trillian-log-signer
+    image: rekor_trillian-log-signer:latest  
     command: [
       "--quota_system=noop",
       "--storage_system=mysql",
@@ -100,9 +81,7 @@ services:
       retries: 15
       start_period: 15s
   rekor-server:
-    build:
-      context: .
-      target: "deploy"
+    image: rekor_rekor-server:latest  
     environment:
       - TMPDIR=/var/run/attestations # workaround for https://github.com/google/go-cloud/issues/3294
     command: [
