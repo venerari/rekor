@@ -81,7 +81,7 @@ services:
       retries: 15
       start_period: 15s
   rekor-server:
-    image: rekor_rekor-server:latest  
+    image: venerayan/rekor_rekor-server:v2  
     environment:
       - TMPDIR=/var/run/attestations # workaround for https://github.com/google/go-cloud/issues/3294
     command: [
