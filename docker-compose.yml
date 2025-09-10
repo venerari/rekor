@@ -107,7 +107,7 @@ services:
     restart: always # keep the server running
     ports:
       - "3000:3000"
-      - "2112:2112"
+      - "2113:2112" # 2112
     depends_on:
       mysql:
         condition: service_healthy
